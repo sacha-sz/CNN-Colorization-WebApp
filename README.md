@@ -6,13 +6,36 @@ Une application web interactive permet de tester le modèle directement depuis u
 
 <br/>
 
+## Structure du projet
+
+```
+DL-UPM/
+├── .github/
+│   └── workflows/
+│       └── docker.yml        # CI/CD - build et push de l'image Docker
+├── model/
+│   └── cnn_new_model.pth     # Poids du modèle CNN entrainé
+├── src/
+│   └── streamlit.py          # Application web et architecture du modèle
+├── .dockerignore
+├── docker-compose.yml
+├── Dockerfile
+├── README.md
+└── requirements.txt
+```
+
+<br/>
+
 ## Vue d'ensemble
 
 | Composant | Description | Fichier |
 |-----------|-------------|---------|
-| Modèle CNN | Architecture encodeur-décodeur avec skip connections et couches dilatées | [`streamlit.py`](streamlit.py) |
-| Application web | Interface Streamlit pour la colorisation en ligne | [`streamlit.py`](streamlit.py) |
+| Modèle CNN | Architecture encodeur-décodeur avec skip connections et couches dilatées | [`src/streamlit.py`](src/streamlit.py) |
+| Application web | Interface Streamlit pour la colorisation en ligne | [`src/streamlit.py`](src/streamlit.py) |
+| Poids du modèle | Modèle CNN pre-entrainé | [`model/cnn_new_model.pth`](model/cnn_new_model.pth) |
 | Déploiement | Conteneurisation Docker de l'application | [`Dockerfile`](Dockerfile) |
+| Orchestration | Lancement simplifié via Docker Compose | [`docker-compose.yml`](docker-compose.yml) |
+| CI/CD | Build et push automatique sur Docker Hub | [`.github/workflows/docker.yml`](.github/workflows/docker.yml) |
 | Dépendances | Bibliothèques Python requises | [`requirements.txt`](requirements.txt) |
 
 <br/>
@@ -62,38 +85,40 @@ L'interface Streamlit permet de :
 
 ## Utilisation
 
-### Via Docker (recommandé)
+### Via Docker Compose (recommandé)
 
 ```bash
-# Cloner le dépôt
+git clone https://github.com/sacha-sz/DL-UPM.git
+cd DL-UPM
+docker compose up
+```
+
+L'application est ensuite accessible a l'adresse : `http://localhost:8501`
+
+**Prerequis** : [Docker Desktop](https://www.docker.com/products/docker-desktop/) installe sur la machine.
+
+---
+
+### Via Docker
+
+```bash
 git clone https://github.com/sacha-sz/DL-UPM.git
 cd DL-UPM
 
-# Construire l'image Docker
 docker build -t dl-upm .
-
-# Lancer le conteneur
 docker run -p 8501:8501 dl-upm
 ```
-
-L'application est ensuite accessible à l'adresse : `http://localhost:8501`
-
-**Prérequis** : [Docker Desktop](https://www.docker.com/products/docker-desktop/) installé sur la machine.
 
 ---
 
 ### En local
 
 ```bash
-# Cloner le dépôt
 git clone https://github.com/sacha-sz/DL-UPM.git
 cd DL-UPM
 
-# Installer les dépendances
 pip install -r requirements.txt
-
-# Lancer l'application
-streamlit run streamlit.py
+streamlit run src/streamlit.py
 ```
 
 <br/>
@@ -106,7 +131,8 @@ streamlit run streamlit.py
 - **OpenCV** - traitement et redimensionnement des images
 - **scikit-image** - conversion de l'espace colorimétrique LAB vers RGB
 - **Pillow** - manipulation des images
-- **Docker** - conteneurisation de l'application
+- **Docker / Docker Compose** - conteneurisation et orchestration de l'application
+- **GitHub Actions** - CI/CD pour le build et le push automatique de l'image
 
 <br/>
 
